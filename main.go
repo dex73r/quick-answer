@@ -1,20 +1,28 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 )
 
-func parse(source *http.Response) {
+func parse(source *http.Response) (line string) {
 	// read response to string
 	sBytes, err := ioutil.ReadAll(source.Body)
 	if err != nil {
-		return
+		return "-1"
 	}
 	s := string(sBytes)
-
+	// parse output to get description of query if it exists
+	var re = regexp.MustCompile(`<div class="kno-rdesc r-iw3x82clRHMU".+jsl=".+"><span>(.+)<span>`)
+	indx := re.FindStringIndex(s)
+	if len(indx) > 0 {
+		fmt.Println(re.FindString(s), "found at index", indx[0])
+	}
+	return ""
 }
 
 func main() {
@@ -26,7 +34,7 @@ func main() {
 	if len(queryStr) < 2 {
 		return
 	}
-	resp, err := http.Get("//https://www.google.sk/search?q=" + queryStr)
+	resp, err := http.Get("http://www.google.sk/search?q=" + queryStr)
 	if err != nil {
 		return
 	}
