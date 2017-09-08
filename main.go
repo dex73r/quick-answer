@@ -1,13 +1,20 @@
 package main
 
 import (
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 )
 
 func parse(source *http.Response) {
-	//... todo tomorrow xd
+	// read response to string
+	sBytes, err := ioutil.ReadAll(source.Body)
+	if err != nil {
+		return
+	}
+	s := string(sBytes)
+
 }
 
 func main() {
