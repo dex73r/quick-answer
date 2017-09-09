@@ -17,13 +17,16 @@ func parse(source *http.Response) (line string) {
 	}
 	s := string(sBytes)
 	// parse output to get description of query if it exists
-	var re = regexp.MustCompile(`(?m)<div class="kno-rdesc r-iw3x82clRHMU".+jsl=".+"><span>(.+)<span>`)
+	var re = regexp.MustCompile(`(?m)<div class="kno-rdesc.+".+jsl=".+"><span>(.+)<span>`)
 	//indx := re.FindStringIndex(s)
 
 	if len(re.FindStringIndex(s)) > 0 {
 		fmt.Println(re.FindString(s), "found at index", re.FindStringIndex(s)[0])
 	} else {
 		fmt.Println(len(re.FindStringIndex(s)))
+		/* f, _ := os.Create("output.txt")
+		defer f.Close()
+		source.Write(f) */
 	}
 	return ""
 }
@@ -37,13 +40,14 @@ func main() {
 	if len(queryStr) < 2 {
 		return
 	}
+	//TODO: google disallowed straight download, shitte, gotta implement P3P
 	resp, err := http.Get("http://www.google.sk/search?q=" + queryStr)
-	fmt.Println("asked for: " + queryStr)
+	// fmt.Println("asked for: " + queryStr)
 	if err != nil {
 		return
 	}
-	fmt.Println("Beginning parse:")
+	// fmt.Println("Beginning parse:")
 	parse(resp)
-	fmt.Println("End of parse")
+	// fmt.Println("End of parse")
 	defer resp.Body.Close()
 }
